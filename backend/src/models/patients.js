@@ -8,15 +8,17 @@ const patientSchema = new Schema({
 	firstName: {
 		type: String,
 		required: true,
+		trim:true
 	},
 	lastName: {
 		type: String,
 		required: true,
+		trim:true
 	},
 	username: {
 		type: String,
 		required: true,
-		unique: true,
+		// unique: true,
 	},
 	password: {
 		type: String,
@@ -37,13 +39,13 @@ const patientSchema = new Schema({
 		required: true,
 	},
 	age: {
-		type: Number,
+		type: String,
 		required: true,
 	},
 	aadharNumber: {
 		type: String,
 		required: true,
-		unique: true,
+		// unique: true,
 		validate: {
 			validator: function (v) {
 				return /^\d{12}$/.test(v); // Ensures exactly 12 digits
@@ -63,7 +65,14 @@ const patientSchema = new Schema({
 	}, dob: {
 		type: Date,
 		required: true
-	}
+	},
+	appointments:[
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Appointment'
+		}
+
+	]
 }, {timestamps: true});
 
 

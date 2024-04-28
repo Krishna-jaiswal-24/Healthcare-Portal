@@ -1,6 +1,6 @@
 import Patient from "../../models/patients.js";
 import bcrypt from "bcrypt";
-import patient from "../../routes/patient.js";
+import Patients from "../../models/patients.js";
 
 
 const generateAccessAndRefereshTokens = async (patientId) => {
@@ -10,12 +10,12 @@ const generateAccessAndRefereshTokens = async (patientId) => {
 		const refreshToken = patient.generateRefreshToken();
 
 		patient.refreshToken = refreshToken;
-		await patient.save({ validateBeforeSave: false });
+		await patient.save({validateBeforeSave: false});
 
-		return { accessToken, refreshToken };
+		return {accessToken, refreshToken};
 	} catch (error) {
 		console.error(`Error in generating tokens: ${error.message}`);
-		return { accessToken: null, refreshToken: null };
+		return {accessToken: null, refreshToken: null};
 	}
 };
 
@@ -76,7 +76,11 @@ const register = async (req, res) => {
 			return res.status(500).json({message: "Could not register the patient"});
 		}
 
+		console.log(createdPatient);
 		return res.status(201).json({message: "Patient registered successfully", patient: createdPatient});
+		//
+		// // Log URL and status code before sending the response
+		// console.log(`Request URL: /patient${req.url}, Status Code: ${res.statusCode}`);
 
 	} catch (error) {
 		console.error(`Error in patient registration: ${error.message}`);
@@ -90,9 +94,9 @@ const login = async (req, res) => {
 	if (!(username || aadharNumber)) {
 		return res.status(400).json({message: "Please fill all the fields"});
 	}
-	const patient = await Patient.findOne({ $or: [{ username: username }, { aadharNumber: aadharNumber }] });
+	const patient = await Patient.findOne({$or: [{username: username}, {aadharNumber: aadharNumber}]});
 
-	if(!patient) {
+	if (!patient) {
 		return res.status(404).json({message: "Patient not found"});
 	}
 
@@ -102,17 +106,50 @@ const login = async (req, res) => {
 		return res.status(401).json({message: "Invalid credentials"});
 	}
 
-	const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+	const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(
 		patient._id
 	);
 
 	const loggedInPatient = await Patient.findById(patient._id).select("-password -__v");
-	console.log(loggedInPatient);
+	console.log("login successful",loggedInPatient);
 
 
-
-	return res.status(200).json({message: "Patient logged in successfully", patient: loggedInPatient, accessToken, refreshToken});
+	return res.status(200).json({
+		message: "Patient logged in successfully",
+		patient: loggedInPatient,
+		accessToken,
+		refreshToken
+	});
 };
 
+const getAllPatients = async (req, res) => {
+	try {
+		const patients = await Patient.find();
+		if (!patients) {
+			return res.status(404).json({message: "No patients found"});
+		}
+		return res.status(200).json({message: "Patients found", patients});
+	} catch (error) {
+		console.error(`Error in getting all patients: ${error.message}`);
+		return res.status(500).json({message: "Could not get all patients"});
+	}
 
-export {register,login};
+}
+
+const getPatient = async (req, res) => {
+	try {
+		const patientId = req.params.patientId;
+		console.log(patientId);
+		const patient=await Patient.findById({_id:patientId});
+
+		if(!patient){
+			return res.status(404).json({message: "Patient not found"});
+		}
+		return res.status(200).json({message: "Patient found", patient});
+		}
+	catch (error) {
+		console.error(`Error in getting patient: ${error.message}`);
+		return res.status(500).json({message: "Could not get the patient"});
+	}
+}
+export {register, login, getAllPatients,getPatient};
