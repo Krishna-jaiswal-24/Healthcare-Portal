@@ -31,7 +31,11 @@ const appointmentSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		enum: ['Consultation', 'Follow-Up', 'Surgery', 'Screening']
-	}
+	},
+	reason: {
+		type: String,
+		default: 'Not provided'
+	},
 
 }, {timestamps: true});
 

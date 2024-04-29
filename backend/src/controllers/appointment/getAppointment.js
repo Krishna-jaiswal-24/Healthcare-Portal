@@ -23,6 +23,7 @@ export const getAppointment = async (req, res) => {
 			createdAt: appointment.createdAt,
 			updatedAt: appointment.updatedAt,
 			remarks: appointment.remarks,
+			reason:appointment.reason,
 		};
 
 		return res.status(200).json({appointment: desiredData});
