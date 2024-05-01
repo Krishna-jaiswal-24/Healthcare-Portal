@@ -36,6 +36,9 @@ const appointmentSchema = new mongoose.Schema({
 		type: String,
 		default: 'Not provided'
 	},
+	tests: {
+		type: [String],
+	},
 
 }, {timestamps: true});
 

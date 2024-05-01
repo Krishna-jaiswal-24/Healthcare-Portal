@@ -31,6 +31,7 @@ export const getPatientAppointments = async (req, res) => {
 				createdAt: appointment.createdAt,
 				updatedAt: appointment.updatedAt,
 				remarks: appointment.remarks,
+				reason:appointment.reason,
 			}))
 		});
 	} catch (e) {

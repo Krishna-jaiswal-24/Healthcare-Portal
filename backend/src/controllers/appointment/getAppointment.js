@@ -32,3 +32,10 @@ export const getAppointment = async (req, res) => {
 		return res.status(500).json({message: "Internal server error"});
 	}
 };
+
+
+export const getAllAppointments = async (req, res) => {
+	const appointments = await Appointment.find({});
+	const numberOfAppointments = appointments.length;
+	return res.json({message:`All Appointments and number of appointments ${numberOfAppointments}`, appointments});
+}

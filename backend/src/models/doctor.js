@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose,{Schema} from "mongoose";
 
 const doctorSchema = new mongoose.Schema({
 	firstName: {
@@ -22,7 +22,7 @@ const doctorSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		validate: {
-			validator: function(v) {
+			validator: function (v) {
 				return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
 			},
 			message: props => `${props.value} is not a valid email!`
@@ -36,7 +36,7 @@ const doctorSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		validate: {
-			validator: function(v) {
+			validator: function (v) {
 				return /^\d{12}$/.test(v); // Ensures exactly 12 digits
 			},
 			message: props => `${props.value} is not a valid Aadhar number!`
@@ -51,15 +51,21 @@ const doctorSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	address:{
+	address: {
 		type: String,
 		required: true
 	},
 	hospital: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Hospital',
-	}
-});
+	},
+	appointments: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Appointment'
+		}],
+},{timestamps: true});
+
 
 const Doctor = mongoose.model('Doctor', doctorSchema);
 export default Doctor;

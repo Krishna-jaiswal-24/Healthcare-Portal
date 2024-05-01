@@ -2,7 +2,7 @@ import Appointment from "../../models/appointment.js";
 import Patient from "../../models/patients.js";
 
 export const createAppointment = async (req, res) => {
-	const { patientId, doctorId, appointmentDate, prescription, remarks, status, type } = req.body;
+	const { patientId, doctorId, appointmentDate, prescription, remarks, status, type,reason } = req.body;
 
 	if (!patientId || !doctorId || !appointmentDate) {
 		return res.status(400).json({ message: "Patient ID, Doctor ID, and Appointment Date are required." });
@@ -32,7 +32,8 @@ export const createAppointment = async (req, res) => {
 			prescription,
 			remarks,
 			status,
-			type
+			type,
+			reason
 		});
 
 		const savedAppointment = await newAppointment.save();
